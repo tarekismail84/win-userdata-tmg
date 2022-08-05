@@ -17,3 +17,10 @@ $trigger = New-ScheduledTaskTrigger -Daily -At 11am
 
 
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskPath "MyTasks" -TaskName "testTask" -Description "This task opens the Notepad editor"
+
+$time = [DateTime]::Now.AddMinutes(5)
+$hourMinute=$time.ToString("HH:mm")
+
+https://github.com/git-for-windows/git/releases/download/v2.37.1.windows.1/Git-2.37.1-64-bit.exe
+
+.\Git-2.37.1-64-bit.exe /VERYSILENT /NORESTART /COMPONENTS=icons,icons\desktop,ext,ext\shellhere,ext\guihere,gitlfs,assoc,assoc_sh
