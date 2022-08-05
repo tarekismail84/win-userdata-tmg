@@ -41,7 +41,7 @@ Start-Sleep -Seconds 15
     $URL2 =  "https://github.com/git-for-windows/git/releases/download/v2.37.1.windows.1/Git-2.37.1-64-bit.exe"
     Invoke-WebRequest -URI $URL2 -OutFile "$FolderName\Git-2.37.1-64-bit.exe"
     Set-Location $FolderName
-    dir
+    Get-ChildItem
     .\Git-2.37.1-64-bit.exe /VERYSILENT /NORESTART /COMPONENTS=icons,icons\desktop,ext,ext\shellhere,ext\guihere,gitlfs,assoc,assoc_sh
 #endregion install-git
 
@@ -55,9 +55,19 @@ Start-Process `
     -FilePath $env:USERPROFILE\Desktop\SSMAgent_latest.exe `
     -ArgumentList "/S"
 Start-Sleep -Seconds 30
-Remove-Item -Force $env:USERPROFILE\Desktop\SSMAgent_latest.exe
+#Remove-Item -Force $env:USERPROFILE\Desktop\SSMAgent_latest.exe
 Restart-Service AmazonSSMAgent
 #endregion ssm-agent-update
+
+#region create-windowstask
+$action = New-ScheduledTaskAction -Execute 'powershell' -Argument C:\scripts\join-domain.ps1
+
+$time = [DateTime]::Now.AddMinutes(5)
+$hourMinute=$time.ToString("HH:mm")
+
+$trigger = New-ScheduledTaskTrigger -Once -At $hourMinute
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskPath "aws-userdata" -TaskName "join-domain" -Description "This task to join the domain" 
+#endregion create-windowstask
 
 #region reboot-instance
     #shutdown /r
