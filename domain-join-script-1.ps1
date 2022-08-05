@@ -83,8 +83,6 @@ $credential = New-Object System.Management.Automation.PSCredential($username,$pa
 $instanceID = invoke-restmethod -uri http://169.254.169.254/latest/meta-data/instance-id
 #$instanceID = HOSTNAME
 Add-Computer -domainname tokiomarine.aws -NewName $instanceID -Credential $credential -Passthru -Verbose -Force -Restart
-
-
 #endregion assign-dns-and-join-domain
 
 
