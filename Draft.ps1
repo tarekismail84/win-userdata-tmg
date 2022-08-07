@@ -24,3 +24,53 @@ $hourMinute=$time.ToString("HH:mm")
 https://github.com/git-for-windows/git/releases/download/v2.37.1.windows.1/Git-2.37.1-64-bit.exe
 
 .\Git-2.37.1-64-bit.exe /VERYSILENT /NORESTART /COMPONENTS=icons,icons\desktop,ext,ext\shellhere,ext\guihere,gitlfs,assoc,assoc_sh
+
+#region Permissions
+    # $Acl = Get-ACL $FolderName
+    # $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("everyone","FullControl","ContainerInherit,Objectinherit","none","Allow")
+    # $Acl.AddAccessRule($AccessRule)
+    # Set-Acl $FolderName $Acl
+#endregion Permissions
+
+##Download then install# /qn "Silent install"
+#c:\awstemp\msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+
+#region ssm-agent-update
+$progressPreference = 'silentlyContinue'
+Invoke-WebRequest `
+    https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/windows_amd64/AmazonSSMAgentSetup.exe `
+    -OutFile $env:USERPROFILE\Desktop\SSMAgent_latest.exe
+
+Start-Process `
+    -FilePath $env:USERPROFILE\Desktop\SSMAgent_latest.exe `
+    -ArgumentList "/S"
+Start-Sleep -Seconds 30
+#Remove-Item -Force $env:USERPROFILE\Desktop\SSMAgent_latest.exe
+Restart-Service AmazonSSMAgent
+#endregion ssm-agent-update
+
+#region reboot-instance
+    #shutdown /r
+    #Start-Sleep -Seconds 120
+#endregion reboot-instance
+
+#region add-new-user
+# $windowsuser = "temp-user"
+# $windowspass = "Abcd1234"
+# New-LocalUser $windowsuser -Password $windowspass -FullName $windowsuser -Description $windowsuser
+# Add-LocalGroupMember -Group "Administrators" -Member $windowsuser
+# $Credentials = New-Object System.Management.Automation.PSCredential $windowsuser,$windowspass 
+#endregion add-new-user
+
+#Start-Process powershell -credential $Credentials {.\scriptInNewPSWindow.ps1}
+
+#region join-domain
+# $domainjoin = (aws ssm get-parameter --name "domainjoin-password" --region eu-west-1  --with-decryption --output text --query Parameter.Value)
+# $password = $domainjoin | ConvertTo-SecureString -asPlainText -Force
+
+# $username = (aws ssm get-parameter --name "domainjoin-user" --region eu-west-1  --with-decryption --output text --query Parameter.Value)
+# $credential = New-Object System.Management.Automation.PSCredential($username,$password)
+# $instanceID = invoke-restmethod -uri http://169.254.169.254/latest/meta-data/instance-id
+# #$instanceID = HOSTNAME
+# Add-Computer -domainname tokiomarine.aws -NewName $instanceID -Credential $credential -Passthru -Verbose -Force -Restart
+#endregion join-domain
