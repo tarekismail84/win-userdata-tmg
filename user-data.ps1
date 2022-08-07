@@ -57,17 +57,21 @@ ipconfig /flushdns
 #endregion assign-dns
 
 #region create-windowstask
+$principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+
 $action1 = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\bin\git.exe' -Argument "clone https://github.com/tarekismail84/win-userdata-tmg.git c:\scripts"
-$time1 = [DateTime]::Now.AddMinutes(3)
+$time1 = [DateTime]::Now.AddMinutes(2)
 $hourMinute1=$time1.ToString("HH:mm")
 $trigger1 = New-ScheduledTaskTrigger -Once -At $hourMinute1
-Register-ScheduledTask -Action $action1 -Trigger $trigger1 -TaskPath "aws-userdata" -TaskName "git-clone1" -Description "git clone" 
+
+Register-ScheduledTask -Action $action1 -Trigger $trigger1 -TaskPath "aws-userdata" -TaskName "git-clone1" -Description "git clone" -Principal $principal
 
 $action2 = New-ScheduledTaskAction -Execute 'powershell' -Argument C:\scripts\join-domain.ps1
-$time2 = [DateTime]::Now.AddMinutes(5)
+$time2 = [DateTime]::Now.AddMinutes(4)
 $hourMinute2=$time2.ToString("HH:mm")
 $trigger2 = New-ScheduledTaskTrigger -Once -At $hourMinute2
-Register-ScheduledTask -Action $action2 -Trigger $trigger2 -TaskPath "aws-userdata" -TaskName "join-domain" -Description "This task to join the domain" 
+
+Register-ScheduledTask -Action $action2 -Trigger $trigger2 -TaskPath "aws-userdata" -TaskName "join-domain" -Description "This task to join the domain" -Principal $principal
 #endregion create-windowstask
 
 </powershell>
