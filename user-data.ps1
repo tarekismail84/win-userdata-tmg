@@ -63,11 +63,11 @@ $hourMinute1=$time1.ToString("HH:mm")
 $trigger1 = New-ScheduledTaskTrigger -Once -At $hourMinute1
 Register-ScheduledTask -Action $action1 -Trigger $trigger1 -TaskPath "aws-userdata" -TaskName "git-clone1" -Description "git clone" 
 
-$action = New-ScheduledTaskAction -Execute 'powershell' -Argument C:\scripts\join-domain.ps1
-$time = [DateTime]::Now.AddMinutes(5)
-$hourMinute=$time.ToString("HH:mm")
-$trigger = New-ScheduledTaskTrigger -Once -At $hourMinute
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskPath "aws-userdata" -TaskName "join-domain" -Description "This task to join the domain" 
+$action2 = New-ScheduledTaskAction -Execute 'powershell' -Argument C:\scripts\join-domain.ps1
+$time2 = [DateTime]::Now.AddMinutes(5)
+$hourMinute2=$time2.ToString("HH:mm")
+$trigger2 = New-ScheduledTaskTrigger -Once -At $hourMinute2
+Register-ScheduledTask -Action $action2 -Trigger $trigger2 -TaskPath "aws-userdata" -TaskName "join-domain" -Description "This task to join the domain" 
 #endregion create-windowstask
 
 </powershell>
