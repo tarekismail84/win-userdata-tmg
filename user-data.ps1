@@ -57,7 +57,7 @@ ipconfig /flushdns
 #endregion assign-dns
 
 #region create-windowstask
-$action1 = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\bin\git.exe' -Argument "clone https://github.com/tarekismail84/wordpress.git c:\scripts"
+$action1 = New-ScheduledTaskAction -Execute 'C:\Program Files\Git\bin\git.exe' -Argument "clone https://github.com/tarekismail84/win-userdata-tmg.git c:\scripts"
 $time1 = [DateTime]::Now.AddMinutes(3)
 $hourMinute1=$time1.ToString("HH:mm")
 $trigger1 = New-ScheduledTaskTrigger -Once -At $hourMinute1
